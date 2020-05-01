@@ -11,6 +11,8 @@ public class obstacleAnimator : MonoBehaviour
     private void OnEnable()
     {
         LeanTween.moveLocalY(gameObject, amplitude, 1/movementFrequency).setLoopPingPong().setEase(easeType);
+
+        //LeanTween.moveLocalX(gameObject, 0f, 2f).setLoopPingPong();
     }
 
     public void OnClose()

@@ -4,12 +4,32 @@ using UnityEngine;
 
 public class HouseCollision : MonoBehaviour
 {
-    private void OnCollisionEnter(Collision collision)
-    { 
+    private bool isInvinsible;
+    public float invinsibilityDuration;
 
-        if (collision.collider.tag == "Obstacle")
+    private void Start()
+    {
+        isInvinsible = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+
+        if (collision.collider.tag == "Obstacle" && !isInvinsible)
         {
             Debug.Log("We hit an " + collision.collider.tag);
+
+            isInvinsible = true;
+
+            Invoke("NotInvinsible", invinsibilityDuration);
         }
     }
+
+    private void NotInvinsible()
+    {
+        isInvinsible = false;
+
+        Debug.Log("No longer invinsible");
+    }
+
 }
