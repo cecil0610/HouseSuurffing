@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class player : MonoBehaviour
 {
-        // Start is called before the first frame update
+
+    private Animator anim;
+        
     void Start()
     {
-        
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -32,6 +34,15 @@ public class player : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) {
             transform.Translate(Vector3.right * Time.deltaTime * sideFactor, Space.World);
             // transform.eulerAngles.y += rotspd * Time.deltaTime * 7;  // TODO rotation not working
+        }
+
+        //Animator Controller setting parameter isRunning
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        {
+            anim.SetBool("isRunning", true);
+        }
+        else {
+            anim.SetBool("isRunning", false);
         }
     }
 }
