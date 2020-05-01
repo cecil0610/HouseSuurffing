@@ -6,6 +6,10 @@ public class player : MonoBehaviour
 {
 
     private Animator anim;
+
+    [Header("Player Parameters")]
+    public float fSpeed;
+    public float fRotation;
         
     void Start()
     {
