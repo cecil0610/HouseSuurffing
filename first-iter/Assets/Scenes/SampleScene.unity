@@ -882,7 +882,7 @@ MonoBehaviour:
   depthPower: 1
   offsetY: 0
   playerDropForceFactor: 100
-  playerMaxStayForceFactor: 14000
+  playerMaxStayForceFactor: 30000
   playerHouseDistanceRangeLow: 4
   playerHouseDistanceRangeHigh: 4.5
   normalisePlusFactor: 1
@@ -1171,7 +1171,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: afa2cf9207cb0d24984b0618731d39f8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: afa2cf9207cb0d24984b0618731d39f8,
         type: 3}
@@ -1854,7 +1854,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fSpeed: 0
   fRotation: 0
-  jumpForceFactor: 15000
+  jumpForceFactor: 100
+  playerDropForceFactor: 100
+  playerMaxStayForceFactor: 30000
+  playerHouseDistanceRangeLow: 4
+  playerHouseDistanceRangeHigh: 4.5
+  normalisePlusFactor: 1
+  magnifiedPower: 15
   gameOverScreen: {fileID: 1860900526}
 --- !u!54 &1122219091
 Rigidbody:
@@ -2486,7 +2492,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.16
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalPosition.z
