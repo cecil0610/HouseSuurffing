@@ -57,10 +57,15 @@ public class player : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision);
+        Debug.Log("Player has collided with " + collision.collider.tag);
         foreach (ContactPoint contact in collision.contacts)
         {
             Debug.DrawRay(contact.point, contact.normal, Color.white);
+        }
+
+        if (collision.collider.tag == "Flood")
+        {
+            Debug.Log("Game Over");
         }
     }
 }

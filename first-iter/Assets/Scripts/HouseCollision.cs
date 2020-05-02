@@ -17,7 +17,7 @@ public class HouseCollision : MonoBehaviour
 
         if (collision.collider.tag == "Obstacle" && !isInvinsible)
         {
-            Debug.Log("We hit an " + collision.collider.tag);
+            //Debug.Log("We hit an " + collision.collider.tag);
 
             isInvinsible = true;
 

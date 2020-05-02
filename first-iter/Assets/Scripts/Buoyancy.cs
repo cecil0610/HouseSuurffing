@@ -7,9 +7,10 @@ public class Buoyancy : MonoBehaviour
 {
     //  ▀▄▀▄▀▄ Editor Variables ▄▀▄▀▄▀
 
-    float buoyantForce = 8f;  // Increase value to make object more buoyant
-    float depthPower = 1f;  // "value 0 mean no additional Buoyant Force underwater, 1 mean Double buoyant Force underwater (underwater pressure)"), Range(0f, 1f) 
-    float offsetY = 0f;  // Center of Mass on Y axis?
+    [Header("Physics coefficients")]
+    public float buoyantForce;  // Increase value to make object more buoyant
+    public float depthPower;  // "value 0 mean no additional Buoyant Force underwater, 1 mean Double buoyant Force underwater (underwater pressure)"), Range(0f, 1f) 
+    public float offsetY;  // Center of Mass on Y axis?
     string waterVolumeTag = "Flood";
 
     //  ▀▄▀▄▀▄ Private Variables ▄▀▄▀▄▀
