@@ -8,6 +8,7 @@ public class Buoyancy : MonoBehaviour
     //  ▀▄▀▄▀▄ Editor Variables ▄▀▄▀▄▀
     [Header("Physics coefficients")]
     public float buoyantForce;  // Increase value to make object more buoyant
+    public float buoyantForceMax;
     public float depthPower;  // "value 0 mean no additional Buoyant Force underwater, 1 mean Double buoyant Force underwater (underwater pressure)"), Range(0f, 1f) 
     public float offsetY;  // Center of Mass on Y axis?
     public int playerDropForceFactor;
@@ -21,6 +22,7 @@ public class Buoyancy : MonoBehaviour
 
     string waterVolumeTag = "Flood";
     string playerTag = "Player";
+    string barrelTag = "Barrel";
 
     //  ▀▄▀▄▀▄ Private Variables ▄▀▄▀▄▀
 
@@ -68,12 +70,29 @@ public class Buoyancy : MonoBehaviour
 
     //  ▀▄▀▄▀▄ Trigger Functions ▄▀▄▀▄▀
 
-    private void OnTriggerEnter(Collider water)
+    private void OnTriggerEnter(Collider other)
     {
-        if (water.CompareTag(waterVolumeTag)) 
+        if (other.CompareTag(waterVolumeTag)) 
         {
             waterCount++;
         }
+
+        // Collect the barrel
+        if (other.CompareTag(barrelTag)) 
+        {
+            // TODO compute bounds of water before moving the barrel
+            // TODO exclude the bounds nearby the player
+            GameObject waterBody = GameObject.FindWithTag(waterVolumeTag);
+            float generationBounds = 20f;
+            other.transform.position = new Vector3(Random.Range(-generationBounds, generationBounds), 0.5f, Random.Range(-generationBounds, generationBounds));
+            // Destroy(other.collider.gameObject);
+            // Gain bonus on barrel collection
+            if (buoyantForce <= buoyantForceMax) {
+                buoyantForce += 1;
+            }
+            Debug.Log("Barrel collected >^_^<-----------------------");
+        }
+
     }
 
     private void OnTriggerStay(Collider other)
@@ -123,14 +142,13 @@ public class Buoyancy : MonoBehaviour
         // TODO potential lose condition here, if the player isn't contacting with the house anymore
     }
 
-    private void OnCollisionEnter(Collision other) {
-        // TODO move these constants elsewhere
-        
+    private void OnCollisionEnter(Collision other) {       
         //Initial strong force when player drops on to the house
         if (other.collider.CompareTag(playerTag))
         {
             rb.AddForce(Vector3.down * playerDropForceFactor);
         }
+        
     }
 
     private void OnCollisionStay(Collision other) {
@@ -152,7 +170,7 @@ public class Buoyancy : MonoBehaviour
             //rb.AddForceAtPosition(forceVector * normalisedForceFactor, contact.point);
             rb.AddRelativeForce(forceVector * normalisedForceFactor);
 
-            Debug.Log(normalisedForceFactor);
+            // Debug.Log(normalisedForceFactor);
 
             //Debug.Log("Velocity = " + rb.velocity);
 
