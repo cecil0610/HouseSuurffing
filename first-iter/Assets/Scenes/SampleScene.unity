@@ -363,11 +363,12 @@ MonoBehaviour:
   depthPower: 0.5
   offsetY: 0
   playerDropForceFactor: 100
-  playerMaxStayForceFactor: 30000
-  playerHouseDistanceRangeLow: 6
-  playerHouseDistanceRangeHigh: 12
+  playerMaxStayForceFactor: 10000
+  playerHouseDistanceRangeLow: 4
+  playerHouseDistanceRangeHigh: 5
   normalisePlusFactor: 1
-  magnifiedPower: 10
+  magnifiedPower: 8
+  maxVelocity: {x: 2, y: 2, z: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,15 +921,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.5
+      value: 0.34
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.04
+      value: 4.16
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.57
+      value: -1.23
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalRotation.x

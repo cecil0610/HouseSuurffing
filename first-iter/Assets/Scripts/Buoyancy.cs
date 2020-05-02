@@ -12,10 +12,12 @@ public class Buoyancy : MonoBehaviour
     public float offsetY;  // Center of Mass on Y axis?
     public int playerDropForceFactor;
     public float playerMaxStayForceFactor;
-    public int playerHouseDistanceRangeLow;
-    public int playerHouseDistanceRangeHigh;
+    public float playerHouseDistanceRangeLow;
+    public float playerHouseDistanceRangeHigh;
     public int normalisePlusFactor;
     public int magnifiedPower;
+
+    public Vector3 maxVelocity;
 
     string waterVolumeTag = "Flood";
     string playerTag = "Player";
@@ -135,17 +137,31 @@ public class Buoyancy : MonoBehaviour
         // Apply force based on the relative position of the player on top of the house
         if (other.collider.CompareTag(playerTag))
         {
-            float distance = Vector3.Distance(transform.position, other.transform.position);  // Range is around (6, 12)
+
+            Vector3 normalisePlayerPos = new Vector3(other.transform.position.x - 0.34f, other.transform.position.y, other.transform.position.z + 1.23f);
+            Vector3 normaliseHousePos = new Vector3(transform.position.x + 3.8f, transform.position.y, transform.position.z + 4.9f);
+            float distance = Vector3.Distance(normaliseHousePos, normalisePlayerPos);  // Range is around (6, 12)
+
+            //COMMENTED OUT
             float normalisedBaseDiff = (distance - playerHouseDistanceRangeLow + normalisePlusFactor);
             float normalisedForceFactor = Mathf.Min(Mathf.Pow(normalisedBaseDiff, magnifiedPower), playerMaxStayForceFactor);
             ContactPoint contact = other.contacts[0];
             // TODO improve the direction of the force
             Vector3 forceVector = (other.transform.position - transform.position) / 100;  // Force from player to house
-            rb.AddForceAtPosition(forceVector * normalisedForceFactor, contact.point);
+            forceVector = new Vector3(forceVector.x, 0f, forceVector.z);
+            //rb.AddForceAtPosition(forceVector * normalisedForceFactor, contact.point);
+            rb.AddRelativeForce(forceVector * normalisedForceFactor);
+
+            Debug.Log(distance);
+
+            //Debug.Log("Velocity = " + rb.velocity);
+
+            //Debug.Log("player.z = " + other.transform.position.z);
+            //Debug.Log("block.z = " + transform.position.z);
 
             // TODO remove debug code
-            Debug.Log(normalisedBaseDiff);
-            Debug.Log(normalisedForceFactor);
+            //Debug.Log("normalise Base Diff = " + normalisedBaseDiff);
+            //Debug.Log("normalise Forced Factor = " + normalisedForceFactor);
         }
     }
 
