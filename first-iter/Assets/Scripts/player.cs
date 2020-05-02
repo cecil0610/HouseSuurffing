@@ -62,8 +62,13 @@ public class player : MonoBehaviour
         {
             Debug.DrawRay(contact.point, contact.normal, Color.white);
         }
+    }
 
-        if (collision.collider.tag == "Flood")
+    private void OnTriggerEnter(Collider triggerCollider)
+    {
+        Debug.Log("Player has collided with " + triggerCollider.tag);
+
+        if (triggerCollider.tag == "Flood")
         {
             Debug.Log("Game Over");
         }
