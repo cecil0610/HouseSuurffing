@@ -10,7 +10,15 @@ public class player : MonoBehaviour
     [Header("Player Parameters")]
     public float fSpeed;
     public float fRotation;
+
+    [Header("Physics coefficients")]
     public float jumpForceFactor;
+    public int playerDropForceFactor;
+    public float playerMaxStayForceFactor;
+    public float playerHouseDistanceRangeLow;
+    public float playerHouseDistanceRangeHigh;
+    public int normalisePlusFactor;
+    public int magnifiedPower;
 
     [Header("Game Over")]
     public GameObject gameOverScreen;
@@ -81,6 +89,17 @@ public class player : MonoBehaviour
                 anim.SetBool("isJumping", false);
                 ContactPoint firstContactPoint = collision.contacts[0];
                 collision.collider.attachedRigidbody.AddForceAtPosition(Vector3.down * jumpForceFactor, firstContactPoint.point);
+                
+                //Horizontal force, same code from buoyancy
+                Vector3 normalisePlayerPos = new Vector3(transform.position.x + 3.8f, transform.position.y, transform.position.z + 4.9f);
+                Vector3 normaliseHousePos = new Vector3(collision.transform.position.x - 0.34f, collision.transform.position.y, collision.transform.position.z + 1.23f);
+                float distance = Vector3.Distance(normaliseHousePos, normalisePlayerPos);  // Range is around (6, 12)
+                float normalisedBaseDiff = (distance - playerHouseDistanceRangeLow + normalisePlusFactor);
+                float normalisedForceFactor = Mathf.Min(Mathf.Pow(normalisedBaseDiff, magnifiedPower), playerMaxStayForceFactor);
+                // TODO improve the direction of the force
+                Vector3 forceVector = (normalisePlayerPos - normaliseHousePos) / 100;  // Force from player to house
+                forceVector = new Vector3(forceVector.x, 0f, forceVector.z);
+                collision.collider.attachedRigidbody.AddRelativeForce(forceVector * normalisedForceFactor);
             }
         }
     }
@@ -88,8 +107,18 @@ public class player : MonoBehaviour
     private void OnTriggerEnter(Collider triggerCollider)
     {
         Debug.Log("Player has collided with " + triggerCollider.tag);
+        
+        if (triggerCollider.tag == "Flood" && transform.position.y < 0)
+        {
+            Debug.Log("Game Over");
+            GameOver();
+        }
+    }
 
-        if (triggerCollider.tag == "Flood")
+    private void OnTriggerStay(Collider triggerCollider) 
+    {
+        Debug.Log(transform.position.y);
+        if (triggerCollider.tag == "Flood" && transform.position.y < 0)
         {
             Debug.Log("Game Over");
             GameOver();

@@ -49,6 +49,7 @@ public class Buoyancy : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         coll = GetComponent<Collider>();
         playerScore = 0;
+        buoyantForce = 8;
     }
 
     // Update is called once per frame
@@ -60,6 +61,7 @@ public class Buoyancy : MonoBehaviour
             isWaterBodySet = false;
         }
 
+        buoyantForce = buoyantForce * 0.9995f;
     }
 
     //  ▀▄▀▄▀▄ Shared Functions ▄▀▄▀▄▀
@@ -98,7 +100,7 @@ public class Buoyancy : MonoBehaviour
             // Destroy(other.collider.gameObject);
             // Gain bonus on barrel collection
             if (buoyantForce <= buoyantForceMax) {
-                buoyantForce += 1;
+                buoyantForce += 8;
             }
             Debug.Log("Barrel collected >^_^<-----------------------");
             playerScore++;
@@ -120,7 +122,8 @@ public class Buoyancy : MonoBehaviour
         rb.isKinematic = false;
 
         playerScore = 0;
-        scoreGameObject.text = "barrels: " + playerScore;       
+        scoreGameObject.text = "barrels: " + playerScore;     
+        buoyantForce = 8;  
     }
 
     private void OnTriggerStay(Collider other)
@@ -173,10 +176,10 @@ public class Buoyancy : MonoBehaviour
 
     private void OnCollisionEnter(Collision other) {       
         //Initial strong force when player drops on to the house
-        if (other.collider.CompareTag(playerTag))
-        {
-            rb.AddForce(Vector3.down * playerDropForceFactor);
-        }
+        // if (other.collider.CompareTag(playerTag))
+        // {
+        //     rb.AddForce(Vector3.down * playerDropForceFactor);
+        // }
         
     }
 
