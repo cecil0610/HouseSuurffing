@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,9 @@ public class player : MonoBehaviour
     [Header("Player Parameters")]
     public float fSpeed;
     public float fRotation;
+
+    [Header("Game Over")]
+    public GameObject gameOverScreen;
 
     void Start()
     {
@@ -71,6 +75,14 @@ public class player : MonoBehaviour
         if (triggerCollider.tag == "Flood")
         {
             Debug.Log("Game Over");
+            GameOver();
         }
+    }
+
+    private void GameOver()
+    {
+        gameOverScreen.SetActive(true);
+
+        Time.timeScale = 0f;
     }
 }

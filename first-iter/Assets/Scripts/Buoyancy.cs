@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Buoyancy : MonoBehaviour
@@ -18,7 +19,15 @@ public class Buoyancy : MonoBehaviour
     public int normalisePlusFactor;
     public int magnifiedPower;
 
+    [Header("Player Score")]
+    public TextMeshProUGUI scoreGameObject;
+    public int playerScore;
+
     public Vector3 maxVelocity;
+
+    [Header("Game Over")]
+    public GameObject gameOverScreen;
+    public GameObject playerGameObject;
 
     string waterVolumeTag = "Flood";
     string playerTag = "Player";
@@ -39,6 +48,7 @@ public class Buoyancy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         coll = GetComponent<Collider>();
+        playerScore = 0;
     }
 
     // Update is called once per frame
@@ -91,8 +101,22 @@ public class Buoyancy : MonoBehaviour
                 buoyantForce += 1;
             }
             Debug.Log("Barrel collected >^_^<-----------------------");
+            playerScore++;
+            scoreGameObject.text = "barrels: " + playerScore;
         }
 
+    }
+
+    public void Restart()
+    {
+        gameOverScreen.SetActive(false);
+        Time.timeScale = 1f;
+
+        playerGameObject.transform.position = new Vector3(0.34f, 4.16f, -1.23f);
+        transform.position = new Vector3(-3.8f, 0f, -4.9f);
+
+        playerScore = 0;
+        scoreGameObject.text = "barrels: " + playerScore;
     }
 
     private void OnTriggerStay(Collider other)
@@ -131,6 +155,7 @@ public class Buoyancy : MonoBehaviour
             }
         }
     }
+
 
     private void OnTriggerExit(Collider other)
     {
