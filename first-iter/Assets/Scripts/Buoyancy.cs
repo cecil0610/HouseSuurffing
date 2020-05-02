@@ -114,9 +114,13 @@ public class Buoyancy : MonoBehaviour
 
         playerGameObject.transform.position = new Vector3(0.34f, 4.16f, -1.23f);
         transform.position = new Vector3(-3.8f, 0f, -4.9f);
+        transform.rotation = Quaternion.identity;
+        // Simple reset
+        rb.isKinematic = true;
+        rb.isKinematic = false;
 
         playerScore = 0;
-        scoreGameObject.text = "barrels: " + playerScore;
+        scoreGameObject.text = "barrels: " + playerScore;       
     }
 
     private void OnTriggerStay(Collider other)

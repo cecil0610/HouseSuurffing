@@ -10,6 +10,7 @@ public class player : MonoBehaviour
     [Header("Player Parameters")]
     public float fSpeed;
     public float fRotation;
+    public float jumpForceFactor;
 
     [Header("Game Over")]
     public GameObject gameOverScreen;
@@ -27,6 +28,7 @@ public class player : MonoBehaviour
         int forwardFactor = 8;
         int backFactor = 3;
         int sideFactor = 5;
+        int jumpFactor = 15;
 
         // anim.Play("run");
 
@@ -48,13 +50,19 @@ public class player : MonoBehaviour
             transform.Translate(Vector3.right * Time.deltaTime * sideFactor, Space.World);
             // transform.eulerAngles.y += rotspd * Time.deltaTime * 7;  // TODO rotation not working
         }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            transform.Translate(Vector3.up * Time.deltaTime * jumpFactor, Space.World);
+            anim.SetBool("isJumping", true);
+        }
 
         //Animator Controller setting parameter isRunning
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
             anim.SetBool("isRunning", true);
         }
-        else {
+        else 
+        {
             anim.SetBool("isRunning", false);
         }
     }
@@ -65,6 +73,15 @@ public class player : MonoBehaviour
         foreach (ContactPoint contact in collision.contacts)
         {
             Debug.DrawRay(contact.point, contact.normal, Color.white);
+        }
+
+        if (collision.collider.CompareTag("House"))
+        {
+            if (anim.GetBool("isJumping") == true) {
+                anim.SetBool("isJumping", false);
+                ContactPoint firstContactPoint = collision.contacts[0];
+                collision.collider.attachedRigidbody.AddForceAtPosition(Vector3.down * jumpForceFactor, firstContactPoint.point);
+            }
         }
     }
 

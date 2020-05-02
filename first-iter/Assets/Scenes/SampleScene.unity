@@ -1854,6 +1854,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fSpeed: 0
   fRotation: 0
+  jumpForceFactor: 15000
   gameOverScreen: {fileID: 1860900526}
 --- !u!54 &1122219091
 Rigidbody:
