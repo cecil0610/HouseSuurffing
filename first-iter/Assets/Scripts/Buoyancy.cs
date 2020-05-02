@@ -6,12 +6,19 @@ using UnityEngine;
 public class Buoyancy : MonoBehaviour
 {
     //  ▀▄▀▄▀▄ Editor Variables ▄▀▄▀▄▀
-
     [Header("Physics coefficients")]
     public float buoyantForce;  // Increase value to make object more buoyant
     public float depthPower;  // "value 0 mean no additional Buoyant Force underwater, 1 mean Double buoyant Force underwater (underwater pressure)"), Range(0f, 1f) 
     public float offsetY;  // Center of Mass on Y axis?
+    public int playerDropForceFactor;
+    public float playerMaxStayForceFactor;
+    public int playerHouseDistanceRangeLow;
+    public int playerHouseDistanceRangeHigh;
+    public int normalisePlusFactor;
+    public int magnifiedPower;
+
     string waterVolumeTag = "Flood";
+    string playerTag = "Player";
 
     //  ▀▄▀▄▀▄ Private Variables ▄▀▄▀▄▀
 
@@ -38,7 +45,7 @@ public class Buoyancy : MonoBehaviour
             waterBody = null;
             isWaterBodySet = false;
         }
-        
+
     }
 
     //  ▀▄▀▄▀▄ Shared Functions ▄▀▄▀▄▀
@@ -67,17 +74,17 @@ public class Buoyancy : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider water)
+    private void OnTriggerStay(Collider other)
     {
-        //if this object inside Water, it object start floating,
-        if (water.CompareTag(waterVolumeTag))
+        // If this object inside Water, it object start floating,
+        if (other.CompareTag(waterVolumeTag))
         {
-            if (transform.position.x < water.bounds.max.x
-            && transform.position.z < water.bounds.max.z
-            && transform.position.x > water.bounds.min.x
-            && transform.position.z > water.bounds.min.z)
+            if (transform.position.x < other.bounds.max.x
+            && transform.position.z < other.bounds.max.z
+            && transform.position.x > other.bounds.min.x
+            && transform.position.z > other.bounds.min.z)
             {
-                if (waterBody != null && !ReferenceEquals(waterBody.gameObject, water.gameObject))
+                if (waterBody != null && !ReferenceEquals(waterBody.gameObject, other.gameObject))
                 {
                     waterBody = null;
                     isWaterBodySet = false;
@@ -85,7 +92,7 @@ public class Buoyancy : MonoBehaviour
 
                 if (!isWaterBodySet)
                 {
-                    waterBody = water.GetComponent<WaterBody>();
+                    waterBody = other.GetComponent<WaterBody>();
                     if (waterBody != null) isWaterBodySet = true;
                 }
                 else
@@ -104,11 +111,41 @@ public class Buoyancy : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider water)
+    private void OnTriggerExit(Collider other)
     {
-        if (water.CompareTag(waterVolumeTag)) 
+        if (other.CompareTag(waterVolumeTag)) 
         {
             waterCount--;
+        }
+
+        // TODO potential lose condition here, if the player isn't contacting with the house anymore
+    }
+
+    private void OnCollisionEnter(Collision other) {
+        // TODO move these constants elsewhere
+        
+        //Initial strong force when player drops on to the house
+        if (other.collider.CompareTag(playerTag))
+        {
+            rb.AddForce(Vector3.down * playerDropForceFactor);
+        }
+    }
+
+    private void OnCollisionStay(Collision other) {
+        // Apply force based on the relative position of the player on top of the house
+        if (other.collider.CompareTag(playerTag))
+        {
+            float distance = Vector3.Distance(transform.position, other.transform.position);  // Range is around (6, 12)
+            float normalisedBaseDiff = (distance - playerHouseDistanceRangeLow + normalisePlusFactor);
+            float normalisedForceFactor = Mathf.Min(Mathf.Pow(normalisedBaseDiff, magnifiedPower), playerMaxStayForceFactor);
+            ContactPoint contact = other.contacts[0];
+            // TODO improve the direction of the force
+            Vector3 forceVector = (other.transform.position - transform.position) / 100;  // Force from player to house
+            rb.AddForceAtPosition(forceVector * normalisedForceFactor, contact.point);
+
+            // TODO remove debug code
+            Debug.Log(normalisedBaseDiff);
+            Debug.Log(normalisedForceFactor);
         }
     }
 

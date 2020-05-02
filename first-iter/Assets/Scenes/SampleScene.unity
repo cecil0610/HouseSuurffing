@@ -326,7 +326,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549469195}
   serializedVersion: 2
-  m_Mass: 100
+  m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.3
   m_UseGravity: 0
@@ -362,6 +362,12 @@ MonoBehaviour:
   buoyantForce: 5
   depthPower: 0.5
   offsetY: 0
+  playerDropForceFactor: 100
+  playerMaxStayForceFactor: 30000
+  playerHouseDistanceRangeLow: 6
+  playerHouseDistanceRangeHigh: 12
+  normalisePlusFactor: 1
+  magnifiedPower: 10
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
