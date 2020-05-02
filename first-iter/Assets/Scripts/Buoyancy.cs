@@ -147,12 +147,12 @@ public class Buoyancy : MonoBehaviour
             float normalisedForceFactor = Mathf.Min(Mathf.Pow(normalisedBaseDiff, magnifiedPower), playerMaxStayForceFactor);
             ContactPoint contact = other.contacts[0];
             // TODO improve the direction of the force
-            Vector3 forceVector = (other.transform.position - transform.position) / 100;  // Force from player to house
+            Vector3 forceVector = (normalisePlayerPos - normaliseHousePos) / 100;  // Force from player to house
             forceVector = new Vector3(forceVector.x, 0f, forceVector.z);
             //rb.AddForceAtPosition(forceVector * normalisedForceFactor, contact.point);
             rb.AddRelativeForce(forceVector * normalisedForceFactor);
 
-            Debug.Log(distance);
+            Debug.Log(normalisedForceFactor);
 
             //Debug.Log("Velocity = " + rb.velocity);
 

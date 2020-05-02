@@ -327,9 +327,9 @@ Rigidbody:
   m_GameObject: {fileID: 549469195}
   serializedVersion: 2
   m_Mass: 1000
-  m_Drag: 0
-  m_AngularDrag: 0.3
-  m_UseGravity: 0
+  m_Drag: 0.5
+  m_AngularDrag: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -359,15 +359,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e7c727131f034a88b533e4a7bf93e65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buoyantForce: 5
-  depthPower: 0.5
+  buoyantForce: 8
+  depthPower: 1
   offsetY: 0
   playerDropForceFactor: 100
-  playerMaxStayForceFactor: 10000
+  playerMaxStayForceFactor: 14000
   playerHouseDistanceRangeLow: 4
-  playerHouseDistanceRangeHigh: 5
+  playerHouseDistanceRangeHigh: 4.5
   normalisePlusFactor: 1
-  magnifiedPower: 8
+  magnifiedPower: 15
   maxVelocity: {x: 2, y: 2, z: 2}
 --- !u!1 &705507993
 GameObject:
@@ -561,6 +561,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -633,6 +634,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 60, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ce93060126f3704cb5eebac40609b0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1122219092}
+  smoothSpeed: 0.125
+  offset: {x: 0.34, y: 22, z: -18}
 --- !u!1 &1122219088 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 2db7e17401e08b94697ecd7acce75ab1,
@@ -667,8 +683,14 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!4 &1122219092 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1789756425}
+  m_PrefabAsset: {fileID: 0}
 --- !u!65 &1122219094
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -975,6 +997,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: c819b3a947a8d174ab18ec6184c7b731, type: 2}
+    - target: {fileID: 9500000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
+      propertyPath: m_UpdateMode
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
 --- !u!1 &1885455710
