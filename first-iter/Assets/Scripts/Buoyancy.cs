@@ -10,6 +10,8 @@ public class Buoyancy : MonoBehaviour
     [Header("Physics coefficients")]
     public float buoyantForce;  // Increase value to make object more buoyant
     public float buoyantForceMax;
+    public float bonusBuoyancy;
+    public float buoyancyDecay;
     public float depthPower;  // "value 0 mean no additional Buoyant Force underwater, 1 mean Double buoyant Force underwater (underwater pressure)"), Range(0f, 1f) 
     public float offsetY;  // Center of Mass on Y axis?
     public int playerDropForceFactor;
@@ -49,7 +51,6 @@ public class Buoyancy : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         coll = GetComponent<Collider>();
         playerScore = 0;
-        buoyantForce = 8;
     }
 
     // Update is called once per frame
@@ -61,7 +62,7 @@ public class Buoyancy : MonoBehaviour
             isWaterBodySet = false;
         }
 
-        buoyantForce = buoyantForce * 0.9995f;
+        buoyantForce = buoyantForce * buoyancyDecay;
     }
 
     //  ▀▄▀▄▀▄ Shared Functions ▄▀▄▀▄▀
@@ -99,9 +100,11 @@ public class Buoyancy : MonoBehaviour
             other.transform.position = new Vector3(Random.Range(-generationBounds, generationBounds), 0.5f, Random.Range(-generationBounds, generationBounds));
             // Destroy(other.collider.gameObject);
             // Gain bonus on barrel collection
-            if (buoyantForce <= buoyantForceMax) {
-                buoyantForce += 8;
+            buoyantForce += bonusBuoyancy;
+            if (buoyantForce > buoyantForceMax) {
+                buoyantForce = buoyantForceMax;
             }
+            Debug.Log("Buoyant foce = " + buoyantForce);
             Debug.Log("Barrel collected >^_^<-----------------------");
             playerScore++;
             scoreGameObject.text = "barrels: " + playerScore;
@@ -114,8 +117,8 @@ public class Buoyancy : MonoBehaviour
         gameOverScreen.SetActive(false);
         Time.timeScale = 1f;
 
-        playerGameObject.transform.position = new Vector3(0.34f, 4.16f, -1.23f);
-        transform.position = new Vector3(-3.8f, 0f, -4.9f);
+        playerGameObject.transform.position = new Vector3(0.34f, 2.16f, -1.23f);
+        transform.position = new Vector3(-3.8f, -2.25f, -4.9f);
         transform.rotation = Quaternion.identity;
         // Simple reset
         rb.isKinematic = true;
@@ -214,5 +217,4 @@ public class Buoyancy : MonoBehaviour
             //Debug.Log("normalise Forced Factor = " + normalisedForceFactor);
         }
     }
-
 }
