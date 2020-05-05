@@ -20,6 +20,7 @@ public class Buoyancy : MonoBehaviour
     public float playerHouseDistanceRangeHigh;
     public int normalisePlusFactor;
     public int magnifiedPower;
+    public int forceVectorDampening;
 
     [Header("Player Score")]
     public TextMeshProUGUI scoreGameObject;
@@ -99,12 +100,9 @@ public class Buoyancy : MonoBehaviour
             GameObject waterBody = GameObject.FindWithTag(waterVolumeTag);
             float generationBounds = 20f;
             other.transform.position = new Vector3(Random.Range(-generationBounds, generationBounds), 0.5f, Random.Range(-generationBounds, generationBounds));
-            // Destroy(other.collider.gameObject);
+            // Destroy(other.collider.gameObject);  No need to destroy here
             // Gain bonus on barrel collection
-            buoyantForce += bonusBuoyancy;
-            if (buoyantForce > buoyantForceMax) {
-                buoyantForce = buoyantForceMax;
-            }
+            buoyantForce = Mathf.Min(buoyantForce + bonusBuoyancy, buoyantForceMax);
             Debug.Log("Buoyant foce = " + buoyantForce);
             Debug.Log("Barrel collected >^_^<-----------------------");
             collectionSfx.Play();
@@ -128,7 +126,7 @@ public class Buoyancy : MonoBehaviour
 
         playerScore = 0;
         scoreGameObject.text = "barrels: " + playerScore;     
-        buoyantForce = 8;  
+        buoyantForce = 50;  
     }
 
     private void OnTriggerStay(Collider other)
@@ -182,7 +180,7 @@ public class Buoyancy : MonoBehaviour
     private void OnCollisionEnter(Collision other) {       
         //Initial strong force when player drops on to the house
         // if (other.collider.CompareTag(playerTag))
-        // {
+        // { 
         //     rb.AddForce(Vector3.down * playerDropForceFactor);
         // }
         
@@ -202,10 +200,12 @@ public class Buoyancy : MonoBehaviour
             float normalisedForceFactor = Mathf.Min(Mathf.Pow(normalisedBaseDiff, magnifiedPower), playerMaxStayForceFactor);
             ContactPoint contact = other.contacts[0];
             // TODO improve the direction of the force
-            Vector3 forceVector = (normalisePlayerPos - normaliseHousePos) / 100;  // Force from player to house
-            forceVector = new Vector3(forceVector.x, 0f, forceVector.z);
-            //rb.AddForceAtPosition(forceVector * normalisedForceFactor, contact.point);
-            rb.AddRelativeForce(forceVector * normalisedForceFactor);
+            Vector3 forceVector = new Vector3(
+                normalisePlayerPos.x - normaliseHousePos.x, 
+                0f, 
+                normalisePlayerPos.z - normaliseHousePos.z
+            );  // Force from player to house
+            rb.AddRelativeForce(forceVector / forceVectorDampening * normalisedForceFactor);
 
             // Debug.Log(normalisedForceFactor);
 

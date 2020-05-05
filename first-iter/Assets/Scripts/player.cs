@@ -6,23 +6,29 @@ using UnityEngine;
 public class player : MonoBehaviour
 {
     private Animator anim;
+    public Rigidbody rb;
 
     [Header("Player Parameters")]
     public float fSpeed;
     public float fRotation;
-
-    [Header("Player Landing effects")]
-    public ParticleSystem jumpDust;
-    public AudioSource jumpSfx;
+    public int forwardFactor;
+    public int backFactor;
+    public int sideFactor;
+    public int jumpForceFactor;
+    public float jumpBuoyantForceDecrement;
 
     [Header("Physics coefficients")]
-    public float jumpForceFactor;
     public int playerDropForceFactor;
     public float playerMaxStayForceFactor;
     public float playerHouseDistanceRangeLow;
     public float playerHouseDistanceRangeHigh;
     public int normalisePlusFactor;
     public int magnifiedPower;
+    public int forceVectorDampening;
+
+    [Header("Player Landing effects")]
+    public ParticleSystem jumpDust;
+    public AudioSource jumpSfx;
 
     [Header("Game Over")]
     public GameObject gameOverScreen;
@@ -31,20 +37,12 @@ public class player : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         anim.SetBool("isJumping", true);
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // TODO move the config somewhere else
-        // Movement multiply factors
-        int forwardFactor = 8;
-        int backFactor = 3;
-        int sideFactor = 5;
-        int jumpFactor = 15;
-
-        // anim.Play("run");
-
         if (Input.GetKey(KeyCode.W)) 
         {
             transform.Translate(Vector3.forward * Time.deltaTime * forwardFactor, Space.World);
@@ -63,9 +61,9 @@ public class player : MonoBehaviour
             transform.Translate(Vector3.right * Time.deltaTime * sideFactor, Space.World);
             // transform.eulerAngles.y += rotspd * Time.deltaTime * 7;  // TODO rotation not working
         }
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && anim.GetBool("isJumping") == false)
         {
-            transform.Translate(Vector3.up * Time.deltaTime * jumpFactor, Space.World);
+            rb.AddForce(Vector3.up * jumpForceFactor, ForceMode.Impulse);
             anim.SetBool("isJumping", true);
         }
 
@@ -92,22 +90,33 @@ public class player : MonoBehaviour
         {
             if (anim.GetBool("isJumping") == true) {
                 anim.SetBool("isJumping", false);
-                ContactPoint firstContactPoint = collision.contacts[0];
-                collision.collider.attachedRigidbody.AddForceAtPosition(Vector3.down * jumpForceFactor, firstContactPoint.point);
                 jumpDust.Play();
                 jumpSfx.Play();
-                Debug.Log("landed!");
-
+                
+                // Decrease buoyancy
+                Buoyancy buoyancyController = collision.gameObject.GetComponent<Buoyancy>();
+                buoyancyController.buoyantForce -= jumpBuoyantForceDecrement;
+                
                 //Horizontal force, same code from buoyancy
-                Vector3 normalisePlayerPos = new Vector3(transform.position.x + 3.8f, transform.position.y, transform.position.z + 4.9f);
-                Vector3 normaliseHousePos = new Vector3(collision.transform.position.x - 0.34f, collision.transform.position.y, collision.transform.position.z + 1.23f);
+                Vector3 normalisePlayerPos = new Vector3(transform.position.x - 0.34f, transform.position.y, transform.position.z + 1.23f);
+                Vector3 normaliseHousePos = new Vector3(collision.transform.position.x + 3.8f, collision.transform.position.y, collision.transform.position.z + 4.9f);
                 float distance = Vector3.Distance(normaliseHousePos, normalisePlayerPos);  // Range is around (6, 12)
                 float normalisedBaseDiff = (distance - playerHouseDistanceRangeLow + normalisePlusFactor);
                 float normalisedForceFactor = Mathf.Min(Mathf.Pow(normalisedBaseDiff, magnifiedPower), playerMaxStayForceFactor);
-                // TODO improve the direction of the force
-                Vector3 forceVector = (normalisePlayerPos - normaliseHousePos) / 100;  // Force from player to house
-                forceVector = new Vector3(forceVector.x, 0f, forceVector.z);
-                collision.collider.attachedRigidbody.AddRelativeForce(forceVector * normalisedForceFactor);
+                Vector3 forceVector = new Vector3(
+                    normalisePlayerPos.x - normaliseHousePos.x, 
+                    normalisePlayerPos.y - normaliseHousePos.y, 
+                    normalisePlayerPos.z - normaliseHousePos.z
+                );  // Force from player to house
+                Debug.Log("Jump force vector" + forceVector);
+                Vector3 horizontalForceVector = new Vector3(forceVector.x, 0f, forceVector.z);
+                collision.collider.attachedRigidbody.AddForce(horizontalForceVector / forceVectorDampening * normalisedForceFactor, ForceMode.Impulse);
+                Vector3 verticalForceVector = new Vector3(0f, forceVector.y, 0f);
+                ContactPoint firstContactPoint = collision.contacts[0];
+                collision.collider.attachedRigidbody.AddForceAtPosition(verticalForceVector * playerDropForceFactor, firstContactPoint.point);  // This will rotate the house
+                
+                
+                
             }
         }
     }
@@ -116,7 +125,7 @@ public class player : MonoBehaviour
     {
         Debug.Log("Player has collided with " + triggerCollider.tag);
         
-        if (triggerCollider.tag == "Flood" && transform.position.y < 0)
+        if (triggerCollider.tag == "Flood" && transform.position.y <= -2)
         {
             Debug.Log("Game Over");
             GameOver();
@@ -125,8 +134,7 @@ public class player : MonoBehaviour
 
     private void OnTriggerStay(Collider triggerCollider) 
     {
-        Debug.Log(transform.position.y);
-        if (triggerCollider.tag == "Flood" && transform.position.y < 0)
+        if (triggerCollider.tag == "Flood" && transform.position.y <= -2)
         {
             Debug.Log("Game Over");
             GameOver();

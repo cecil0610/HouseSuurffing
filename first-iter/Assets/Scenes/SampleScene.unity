@@ -961,7 +961,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 20, y: 10, z: 20}
+  m_Size: {x: 21, y: 13, z: 21}
   m_Center: {x: 10, y: 5, z: 10}
 --- !u!54 &549469197
 Rigidbody:
@@ -1010,18 +1010,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e7c727131f034a88b533e4a7bf93e65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buoyantForce: 8
-  buoyantForceMax: 8.5
-  bonusBuoyancy: 1.5
-  buoyancyDecay: 0.999
+  buoyantForce: 60
+  buoyantForceMax: 100
+  bonusBuoyancy: 20
+  buoyancyDecay: 0.998
   depthPower: 1
   offsetY: 0
   playerDropForceFactor: 100
-  playerMaxStayForceFactor: 30000
+  playerMaxStayForceFactor: 12000
   playerHouseDistanceRangeLow: 4
   playerHouseDistanceRangeHigh: 4.5
   normalisePlusFactor: 1
   magnifiedPower: 15
+  forceVectorDampening: 100
   scoreGameObject: {fileID: 660092472}
   playerScore: 0
   collectionSfx: {fileID: 1483792957}
@@ -6800,17 +6801,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d92b42960d9f746acbfb0a506e6e5ab2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 0}
   fSpeed: 0
   fRotation: 0
+  forwardFactor: 8
+  backFactor: 3
+  sideFactor: 5
+  jumpForceFactor: 12
+  jumpBuoyantForceDecrement: 2
+  playerDropForceFactor: 200
+  playerMaxStayForceFactor: 10000
+  playerHouseDistanceRangeLow: 1
+  playerHouseDistanceRangeHigh: 10
+  normalisePlusFactor: 1
+  magnifiedPower: 6
+  forceVectorDampening: 100
   jumpDust: {fileID: 868884758}
   jumpSfx: {fileID: 282776418}
-  jumpForceFactor: 8000
-  playerDropForceFactor: 100
-  playerMaxStayForceFactor: 30000
-  playerHouseDistanceRangeLow: 4
-  playerHouseDistanceRangeHigh: 4.5
-  normalisePlusFactor: 1
-  magnifiedPower: 15
   gameOverScreen: {fileID: 1860900526}
 --- !u!54 &1122219091
 Rigidbody:
