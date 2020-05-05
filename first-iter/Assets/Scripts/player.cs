@@ -11,6 +11,10 @@ public class player : MonoBehaviour
     public float fSpeed;
     public float fRotation;
 
+    [Header("Player Landing effects")]
+    public ParticleSystem jumpDust;
+    public AudioSource jumpSfx;
+
     [Header("Physics coefficients")]
     public float jumpForceFactor;
     public int playerDropForceFactor;
@@ -26,6 +30,7 @@ public class player : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
+        anim.SetBool("isJumping", true);
     }
 
     // Update is called once per frame
@@ -89,7 +94,10 @@ public class player : MonoBehaviour
                 anim.SetBool("isJumping", false);
                 ContactPoint firstContactPoint = collision.contacts[0];
                 collision.collider.attachedRigidbody.AddForceAtPosition(Vector3.down * jumpForceFactor, firstContactPoint.point);
-                
+                jumpDust.Play();
+                jumpSfx.Play();
+                Debug.Log("landed!");
+
                 //Horizontal force, same code from buoyancy
                 Vector3 normalisePlayerPos = new Vector3(transform.position.x + 3.8f, transform.position.y, transform.position.z + 4.9f);
                 Vector3 normaliseHousePos = new Vector3(collision.transform.position.x - 0.34f, collision.transform.position.y, collision.transform.position.z + 1.23f);

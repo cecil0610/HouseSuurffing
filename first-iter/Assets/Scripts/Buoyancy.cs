@@ -24,6 +24,7 @@ public class Buoyancy : MonoBehaviour
     [Header("Player Score")]
     public TextMeshProUGUI scoreGameObject;
     public int playerScore;
+    public AudioSource collectionSfx;
 
     public Vector3 maxVelocity;
 
@@ -106,6 +107,7 @@ public class Buoyancy : MonoBehaviour
             }
             Debug.Log("Buoyant foce = " + buoyantForce);
             Debug.Log("Barrel collected >^_^<-----------------------");
+            collectionSfx.Play();
             playerScore++;
             scoreGameObject.text = "barrels: " + playerScore;
         }
