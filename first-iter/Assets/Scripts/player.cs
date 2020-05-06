@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[RequireComponent (typeof (CharacterController))]
 public class player : MonoBehaviour
 {
     private Animator anim;
@@ -33,6 +35,11 @@ public class player : MonoBehaviour
     [Header("Game Over")]
     public GameObject gameOverScreen;
 
+    [Header("Player rotation")]
+    private Quaternion targetRotation;
+    private CharacterController controller;
+    public float rotationSpeed = 450;
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -49,6 +56,14 @@ public class player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+        if (input != Vector3.zero)
+        {
+            targetRotation = Quaternion.LookRotation(input);
+            transform.eulerAngles = Vector3.up * Mathf.MoveTowardsAngle(transform.eulerAngles.y, targetRotation.eulerAngles.y, rotationSpeed * Time.deltaTime);
+        }
+
         if (Input.GetKey(KeyCode.W)) 
         {
             rb.AddForce(Vector3.forward * forwardFactor);
