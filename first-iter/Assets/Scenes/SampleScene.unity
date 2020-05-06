@@ -6961,12 +6961,12 @@ MonoBehaviour:
   rb: {fileID: 0}
   fSpeed: 0
   fRotation: 0
-  forwardFactor: 8
-  backFactor: 3
-  sideFactor: 5
-  jumpForceFactor: 12
+  forwardFactor: 500
+  backFactor: 500
+  sideFactor: 450
+  jumpForceFactor: 16
   jumpBuoyantForceDecrement: 2
-  playerDropForceFactor: 200
+  playerDropForceFactor: 2000
   playerMaxStayForceFactor: 10000
   playerHouseDistanceRangeLow: 1
   playerHouseDistanceRangeHigh: 10
@@ -7749,15 +7749,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.41
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.42
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2db7e17401e08b94697ecd7acce75ab1, type: 3}
       propertyPath: m_LocalRotation.x

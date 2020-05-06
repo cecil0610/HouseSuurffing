@@ -103,8 +103,6 @@ public class Buoyancy : MonoBehaviour
             // Destroy(other.collider.gameObject);  No need to destroy here
             // Gain bonus on barrel collection
             buoyantForce = Mathf.Min(buoyantForce + bonusBuoyancy, buoyantForceMax);
-            Debug.Log("Buoyant foce = " + buoyantForce);
-            Debug.Log("Barrel collected >^_^<-----------------------");
             collectionSfx.Play();
             playerScore++;
             scoreGameObject.text = "barrels: " + playerScore;
@@ -117,7 +115,12 @@ public class Buoyancy : MonoBehaviour
         gameOverScreen.SetActive(false);
         Time.timeScale = 1f;
 
-        playerGameObject.transform.position = new Vector3(0.34f, 2.16f, -1.23f);
+        float playerPosGenBounds = 3f;
+        playerGameObject.transform.position = new Vector3(
+            Random.Range(-playerPosGenBounds, playerPosGenBounds),
+            6f, 
+            Random.Range(-playerPosGenBounds, playerPosGenBounds)
+        );
         transform.position = new Vector3(-3.8f, -2.25f, -4.9f);
         transform.rotation = Quaternion.identity;
         // Simple reset
@@ -206,17 +209,6 @@ public class Buoyancy : MonoBehaviour
                 normalisePlayerPos.z - normaliseHousePos.z
             );  // Force from player to house
             rb.AddRelativeForce(forceVector / forceVectorDampening * normalisedForceFactor);
-
-            // Debug.Log(normalisedForceFactor);
-
-            //Debug.Log("Velocity = " + rb.velocity);
-
-            //Debug.Log("player.z = " + other.transform.position.z);
-            //Debug.Log("block.z = " + transform.position.z);
-
-            // TODO remove debug code
-            //Debug.Log("normalise Base Diff = " + normalisedBaseDiff);
-            //Debug.Log("normalise Forced Factor = " + normalisedForceFactor);
         }
     }
 }

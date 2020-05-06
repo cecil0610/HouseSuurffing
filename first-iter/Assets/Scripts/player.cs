@@ -38,6 +38,12 @@ public class player : MonoBehaviour
         anim = GetComponent<Animator>();
         anim.SetBool("isJumping", true);
         rb = GetComponent<Rigidbody>();
+        float playerPosGenBounds = 3f;
+        transform.position = new Vector3(
+            UnityEngine.Random.Range(-playerPosGenBounds, playerPosGenBounds),
+            6f, 
+            UnityEngine.Random.Range(-playerPosGenBounds, playerPosGenBounds)
+        );
     }
 
     // Update is called once per frame
@@ -45,25 +51,35 @@ public class player : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W)) 
         {
-            transform.Translate(Vector3.forward * Time.deltaTime * forwardFactor, Space.World);
+            rb.AddForce(Vector3.forward * forwardFactor);
+            // transform.Translate(Vector3.forward * Time.deltaTime * forwardFactor, Space.World);
         }
         if (Input.GetKey(KeyCode.S)) 
         {
-            transform.Translate(Vector3.back * Time.deltaTime * backFactor, Space.World);
+            rb.AddForce(Vector3.back * backFactor);
+            // transform.Translate(Vector3.back * Time.deltaTime * backFactor, Space.World);
         }
         if (Input.GetKey(KeyCode.A)) 
         {
-            transform.Translate(Vector3.left * Time.deltaTime * sideFactor, Space.World);
+            rb.AddForce(Vector3.left * sideFactor);   
+            // transform.Translate(Vector3.left * Time.deltaTime * sideFactor, Space.World);
             // transform.eulerAngles.y += -rotspd * Time.deltaTime * 7;  // TODO rotation not working
         }
         if (Input.GetKey(KeyCode.D)) 
         {
-            transform.Translate(Vector3.right * Time.deltaTime * sideFactor, Space.World);
+            rb.AddForce(Vector3.right * sideFactor); 
+            // transform.Translate(Vector3.right * Time.deltaTime * sideFactor, Space.World);
             // transform.eulerAngles.y += rotspd * Time.deltaTime * 7;  // TODO rotation not working
         }
         if (Input.GetKey(KeyCode.Space) && anim.GetBool("isJumping") == false)
         {
             rb.AddForce(Vector3.up * jumpForceFactor, ForceMode.Impulse);
+            Vector3 jumpedPosition = new Vector3(
+                transform.position.x, 
+                transform.position.y + jumpForceFactor / 10, 
+                transform.position.z
+            );
+            transform.position = Vector3.Lerp(transform.position, jumpedPosition, 0.5f);
             anim.SetBool("isJumping", true);
         }
 
@@ -80,12 +96,6 @@ public class player : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Player has collided with " + collision.collider.tag);
-        foreach (ContactPoint contact in collision.contacts)
-        {
-            Debug.DrawRay(contact.point, contact.normal, Color.white);
-        }
-
         if (collision.collider.CompareTag("House"))
         {
             if (anim.GetBool("isJumping") == true) {
@@ -108,14 +118,11 @@ public class player : MonoBehaviour
                     normalisePlayerPos.y - normaliseHousePos.y, 
                     normalisePlayerPos.z - normaliseHousePos.z
                 );  // Force from player to house
-                Debug.Log("Jump force vector" + forceVector);
                 Vector3 horizontalForceVector = new Vector3(forceVector.x, 0f, forceVector.z);
                 collision.collider.attachedRigidbody.AddForce(horizontalForceVector / forceVectorDampening * normalisedForceFactor, ForceMode.Impulse);
-                Vector3 verticalForceVector = new Vector3(0f, forceVector.y, 0f);
+                Vector3 verticalForceVector = new Vector3(0f, -forceVector.y, 0f);  // Downwards force
                 ContactPoint firstContactPoint = collision.contacts[0];
-                collision.collider.attachedRigidbody.AddForceAtPosition(verticalForceVector * playerDropForceFactor, firstContactPoint.point);  // This will rotate the house
-                
-                
+                collision.collider.attachedRigidbody.AddForceAtPosition(verticalForceVector * playerDropForceFactor, firstContactPoint.point);  // This will rotate the house      
                 
             }
         }
@@ -123,7 +130,6 @@ public class player : MonoBehaviour
 
     private void OnTriggerEnter(Collider triggerCollider)
     {
-        Debug.Log("Player has collided with " + triggerCollider.tag);
         
         if (triggerCollider.tag == "Flood" && transform.position.y <= -2)
         {
@@ -146,5 +152,6 @@ public class player : MonoBehaviour
         gameOverScreen.SetActive(true);
 
         Time.timeScale = 0f;
+        anim.SetBool("isJumping", true);
     }
 }
